@@ -1,0 +1,22 @@
+{
+  "name": "modbot",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "ts-node src/Bot.ts",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "discord.js": "^14.6.0",
+    "dotenv": "^16.0.3",
+    "fixedsize-map": "^1.0.1",
+    "moment": "^2.29.4",
+    "mongoose": "^6.7.2",
+    "pino": "^8.7.0",
+    "pino-pretty": "^9.1.1",
+    "table": "^6.8.1"
+  }
+}
