@@ -29,32 +29,40 @@ const convertFreq = (freq) => {
  * 
  * @param {import('../structures/BotClient')} client 
  */
+const processMessages = async (client) => {
+    const automessages = await Automessage.find({});
+    automessages.forEach(async m => {
+        const secondsFreq = convertFreq(m.frequency);
+
+        if (!m.lastSent || moment().diff(moment(m.lastSent)) >= secondsFreq * 1000) {
+            let channel;
+            try {
+                channel = await client.channels.fetch(m.channelId);
+                m.lastSent = new Date();
+                m.save();
+                channel.send(m.message);
+            } catch (ex) {
+                m.delete();
+                client.logger.warn('Channel not found');
+            }
+        }         
+    })
+}
+
+/**
+ * 
+ * @param {import('../structures/BotClient')} client 
+ */
 module.exports = async (client) => {
     client.logger.success(`Logged in as ${client.user.tag}!`);
 
     // Register interactions
     client.registerInteractions(process.env.GUILD_ID);
 
+    await processMessages(client);
+
     // Automessages
     setInterval(async () => {
-        const automessages = await Automessage.find({});
-        console.log(automessages);
-        automessages.forEach(async m => {
-            const secondsFreq = convertFreq(m.frequency);
-
-            if (!m.lastSent || moment().diff(moment(m.lastSent)) >= secondsFreq * 1000) {
-                let channel;
-                try {
-                    channel = await client.channels.fetch(m.channelId);
-                    m.lastSent = new Date();
-                    m.save();
-                    channel.send(m.message);
-                } catch (ex) {
-                    m.delete();
-                    client.logger.warn('Channel not found');
-                }
-            }         
-        })
-        
-    }, 30000);
+        processMessages(client);
+    }, 60000);
 }
