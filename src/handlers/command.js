@@ -24,7 +24,8 @@ module.exports = {
             if (cmd.slashCommand.autodefer) await interaction.deferReply({ ephemeral: cmd.slashCommand.ephemeral });
             await cmd.interactionRun(interaction);
         } catch (ex) {
-            await interaction.followUp('Oops! An error occured while running the command');
+            if (cmd.slashCommand.autodefer) await interaction.followUp('Oops! An error occured while running the command');
+            else await interaction.reply('Oops! An error occured while running the command');
             interaction.client.logger.error('interactionRun', ex);
         }
     }
