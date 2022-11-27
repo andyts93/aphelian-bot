@@ -7,18 +7,21 @@ const ReqString = {
 
 const schema = new Schema(
     {
-        member_id: ReqString
+        member_id: ReqString,
+        messages: {
+            type: Number,
+            default: 0
+        }
     }
 );
 
 const Model = model('members', schema);
 
 module.exports = {
-    getMember: async(guild_id, member_id) => {
-        let member = await Model.findOne({ guild_id, member_id});
+    getMember: async(member_id) => {
+        let member = await Model.findOne({ member_id});
         if (!member) {
             member = new Model({
-                guild_id,
                 member_id
             });
         }

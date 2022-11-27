@@ -1,5 +1,6 @@
 const moment = require('moment');
 const { Automessage } = require('../database/schemas/Automessage');
+const { Settings } = require('../database/schemas/Settings');
 
 /**
  * 
@@ -65,4 +66,6 @@ module.exports = async (client) => {
     setInterval(async () => {
         processMessages(client);
     }, 60000);
+
+    if ((await Settings.find()).length === 0) await (new Settings()).save();
 }

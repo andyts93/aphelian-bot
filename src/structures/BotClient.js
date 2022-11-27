@@ -1,4 +1,4 @@
-const { Client, GatewayIntentBits, Partials, Collection, ApplicationCommandType } = require("discord.js");
+const { Client, GatewayIntentBits, Partials, Collection, ApplicationCommandType, EmbedBuilder, Colors } = require("discord.js");
 const path = require("path");
 const { schemas } = require("../database/mongoose");
 const Logger = require("../helpers/Logger");
@@ -158,5 +158,14 @@ module.exports = class BotClient extends Client {
             throw new Error("Did you provide a valid guildId to register interactions");
         }
         this.logger.success("Successfully registered interactions");
+    }
+
+    errorEmbed({title, description}) {
+        const embed = new EmbedBuilder()
+            .setColor(Colors.DarkRed)
+            .setTitle(title || 'Error')
+            .setDescription(description || '');
+        
+        return embed;
     }
 }
