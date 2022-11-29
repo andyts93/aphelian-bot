@@ -98,7 +98,18 @@ module.exports = class BotClient extends Client {
      */
     loadCommand(cmd) {
         if (cmd.command?.enabled) {
-            // TODO
+            const index = this.commands.length;
+            if (this.commandIndex.has(cmd.name)) {
+                throw new Error(`Command ${cmd.name} already registered`);
+            }
+            if (Array.isArray(cmd.command.aliases)) {
+                cmd.command.aliases.forEach(alias => {
+                    if (this.commandIndex.has(alias)) throw new Error(`Alias ${alias} already registered`);
+                    this.commandIndex.set(alias.toLocaleLowerCase(), index);
+                })
+            }
+            this.commandIndex.set(cmd.name.toLocaleLowerCase(), index);
+            this.commands.push(cmd);
         }
 
         if (cmd.slashCommand?.enabled) {

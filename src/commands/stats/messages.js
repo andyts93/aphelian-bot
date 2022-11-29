@@ -9,7 +9,7 @@ const { Settings } = require('../../database/schemas/Settings');
  */
 module.exports = {
     name: 'messages',
-    description: 'Manage the secret santa event',
+    description: 'Get your messages sent',
     category: 'STATS',
     command: {
         enabled: false,

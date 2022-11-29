@@ -1,6 +1,39 @@
 module.exports = {
     /**
      * 
+     * @param {import('discord.js').Message} message 
+     * @param {import('../structures/Command')} cmd
+     * @param {object} settings 
+     */
+    handlePrefixCommand: async function (message, cmd, settings) {
+        const prefix = process.env.BOT_PREFIX;
+        const args = message.content.replace(prefix, "").split(/\s+/);
+        const invoke = args.shift().toLowerCase();
+
+        const data = {};
+        data.prefix = prefix;
+        data.invoke = invoke;
+
+        if (!message.channel.permissionsFor(message.guild.members.me).has('SendMessages')) return;
+
+        // user permissions
+        if (cmd.userPermissions && cmd.userPermissions.length > 0) {
+            if (!message.channel.permissionsFor(message.member).has(cmd.userPermissions)) {
+                return message.reply(`You need ${cmd.userPermissions} for this command`)
+            }
+        }
+
+        try {
+            await cmd.messageRun(message, args, data);
+        }
+        catch (ex) {
+            message.client.logger.error('messagRun', ex);
+            message.reply('An error occured while running this command');
+        }
+    },
+
+    /**
+     * 
      * @param {import('discord.js').ChatInputCommandInteraction} interaction
      */
     handleSlashCommand: async function (interaction) {
