@@ -11,6 +11,13 @@ const schema = new Schema(
         messages: {
             type: Number,
             default: 0
+        },
+        game_points: {
+            type: Number,
+            default: 0
+        },
+        crew3Id: {
+            type: String
         }
     }
 );

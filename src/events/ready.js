@@ -1,6 +1,8 @@
 const moment = require('moment');
 const { Automessage } = require('../database/schemas/Automessage');
 const { Settings } = require('../database/schemas/Settings');
+const { start } = require('../handlers/randomgame');
+const { giveXP } = require('../helpers/Crew3');
 
 /**
  * 
@@ -57,6 +59,11 @@ const processMessages = async (client) => {
 module.exports = async (client) => {
     client.logger.success(`Logged in as ${client.user.tag}!`);
 
+    let settings = await Settings.findOne();
+    if (!settings) {
+        settings = await (new Settings()).save();
+    }
+
     // Register interactions
     client.registerInteractions(process.env.GUILD_ID);
 
@@ -67,5 +74,9 @@ module.exports = async (client) => {
         processMessages(client);
     }, 60000);
 
-    if ((await Settings.find()).length === 0) await (new Settings()).save();
+    // Random game
+    start(client);
+
+    // Test xp
+    await giveXP('198075140154720256', 1);
 }

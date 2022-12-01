@@ -10,6 +10,10 @@ const schema = new Schema(
             enabled: { type: Boolean, default: false },
             delay: { type: Number, default: 0 },
             minChars: { type: Number, default: 0 }
+        },
+        randomGames: {
+            enabled: { type: Boolean, default: false },
+            probability: { type: Number, default: 0.5 },
         }
     }
 );

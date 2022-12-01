@@ -13,6 +13,8 @@ module.exports = class BotClient extends Client {
                 GatewayIntentBits.Guilds,
                 GatewayIntentBits.GuildMessages,
                 GatewayIntentBits.MessageContent,
+                GatewayIntentBits.GuildMessageReactions,
+                GatewayIntentBits.GuildEmojisAndStickers,
             ],
             partials: [
                 Partials.User,
@@ -102,6 +104,7 @@ module.exports = class BotClient extends Client {
             if (this.commandIndex.has(cmd.name)) {
                 throw new Error(`Command ${cmd.name} already registered`);
             }
+            console.log(cmd.command.aliases);
             if (Array.isArray(cmd.command.aliases)) {
                 cmd.command.aliases.forEach(alias => {
                     if (this.commandIndex.has(alias)) throw new Error(`Alias ${alias} already registered`);
