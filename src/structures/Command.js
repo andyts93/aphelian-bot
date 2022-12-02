@@ -19,6 +19,7 @@
  * @property {boolean} enabled - Whether the slash command is enabled or not
  * @property {boolean} ephemeral - Whether the reply should be ephemeral
  * @property {import('discord.js').ApplicationCommandOptionData[]} options - command options
+ * @property {boolean} autodefer - Wheter to defer the reply immediately or not
  */
 
 /**

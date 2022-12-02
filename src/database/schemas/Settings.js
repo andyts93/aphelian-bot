@@ -14,6 +14,12 @@ const schema = new Schema(
         randomGames: {
             enabled: { type: Boolean, default: false },
             probability: { type: Number, default: 0.5 },
+        },
+        onlyGifChannels: {
+            type: [{
+                enabled: { type: Boolean },
+                channelId: { type: String },
+            }]
         }
     }
 );

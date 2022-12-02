@@ -10,11 +10,11 @@ module.exports = {
     description: 'Show your game points',
     category: 'STATS',
     command: {
-        enabled: true,
+        enabled: false,
         aliases: ['gp']
     },
     slashCommand: {
-        enabled: true,
+        enabled: false,
         ephemeral: false,
         autodefer: true
     },

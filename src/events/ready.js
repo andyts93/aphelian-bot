@@ -76,7 +76,4 @@ module.exports = async (client) => {
 
     // Random game
     start(client);
-
-    // Test xp
-    await giveXP('198075140154720256', 1);
 }

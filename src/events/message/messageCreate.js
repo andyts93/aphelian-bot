@@ -1,6 +1,8 @@
 const { Settings } = require('../../database/schemas/Settings');
 const { trackMessages } = require('../../handlers/stats');
 const { handlePrefixCommand } = require('../../handlers/command');
+const { getMember } = require('../../database/schemas/Member');
+const { EmbedBuilder } = require('@discordjs/builders');
 
 /**
  * 
@@ -12,7 +14,28 @@ module.exports = async (client, message) => {
 
     const settings = await Settings.findOne();
 
-    let isCommand = false;
+    if (settings.onlyGifChannels.length > 0) {
+        const channelSettings = settings.onlyGifChannels.find(el => el.channelId === message.channel.id.toString());
+        if (channelSettings?.enabled) {
+            if (!message.content.includes('https://tenor.com')) {
+                await message.delete();
+                message.channel.send({
+                    embeds: [
+                        new EmbedBuilder()
+                            .setDescription(`<@${message.member.id}> Sorry, only GIFs are allowed in this channel`)
+                            .setImage('https://media.tenor.com/VnKRqdXWHVgAAAAC/thats-not-what-we-do-here-goliath.gif')
+                    ]
+                }).then(botMessage => {
+                    setTimeout(() => botMessage.delete(), 10 * 1000);
+                });
+            } else {
+                const member = await getMember(message.member.id);
+                member.gifTalks++;
+                await member.save();
+            }
+        }
+    }
+
     if (message.content.includes(`${client.user.id}`)) {
         message.channel.send(`> My prefix is \`${process.env.BOT_PREFIX}\``);
     }

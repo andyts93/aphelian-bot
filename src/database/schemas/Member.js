@@ -18,6 +18,10 @@ const schema = new Schema(
         },
         crew3Id: {
             type: String
+        },
+        gifTalks: {
+            type: Number,
+            default: 0
         }
     }
 );
