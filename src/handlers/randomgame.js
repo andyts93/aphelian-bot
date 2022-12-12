@@ -69,10 +69,9 @@ const firstWin = async (channel) => {
 
 /**
  * 
- * @param {import('../structures/BotClient')} client
  * @param {import('discord.js').Channel} channel 
  */
-const guess = async (client, channel) => {
+const guess = async (channel) => {
     const timer = 5 * 60 * 1000;
 
     /**
@@ -89,7 +88,7 @@ const guess = async (client, channel) => {
         ]
     });
 
-    const randomemojis = require('../helpers/RandomEmoji')(10);
+    const randomemojis = require('../helpers/RandomEmoji')(20);
     const winnerEmoji = sample(randomemojis);
     console.log(winnerEmoji);
 
@@ -129,6 +128,22 @@ const guess = async (client, channel) => {
     randomemojis.forEach(async em => await message.react(em));
 }
 
+/**
+ * 
+ * @param {string} game 
+ * @param {import('discord.js').GuildBasedChannel)} channel
+ */
+const launch = async (game, channel) => {
+    switch (game) {
+        case 'first-win':
+            await firstWin(channel);
+            break;
+        case 'guess':
+            await guess(channel);
+            break;
+    }
+};
+
 module.exports = {
     /**
      * 
@@ -143,17 +158,11 @@ module.exports = {
                 if (random >= settings.randomGames.probability) {
                     const game = sample(games);
                     const channel = await client.guilds.cache.get(process.env.GUILD_ID).channels.fetch(process.env.GAME_CHANNEL);
-
-                    switch (game) {
-                        case 'first-win':
-                            await firstWin(channel);
-                            break;
-                        case 'guess':
-                            await guess(client, channel);
-                            break;
-                    }
+                    
+                    await launch(game, channel);
                 }
             }, 10 * 60 * 1000);
         }
-    }
+    },
+    launch,
 }
