@@ -1,12 +1,12 @@
 const { ApplicationCommandOptionType, EmbedBuilder, Colors } = require('discord.js');
-const { launch } = require('../../handlers/randomgame');
+const { launch, games } = require('../../handlers/randomgame');
 
 /**
  * @type {import('../../structures/Command')}
  */
 module.exports = {
     name: 'startrandomgame',
-    description: 'Start a random message in the specified channel right now',
+    description: 'Start a random game in the specified channel right now',
     category: 'ADMIN',
     userPermissions: ['ManageGuild'],
     command: {
@@ -22,16 +22,12 @@ module.exports = {
                 required: true,
                 description: 'The game to start',
                 type: ApplicationCommandOptionType.String,
-                choices: [
+                choices: games.map(g => (
                     {
-                        name: 'First win',
-                        value: 'first-win',
-                    },
-                    {
-                        name: 'Guess the emojii',
-                        value: 'guess'
+                        name: g,
+                        value: g,
                     }
-                ],
+                )),
             },
             {
                 name: 'channel',
@@ -61,6 +57,6 @@ module.exports = {
         setTimeout(() => {
             launch(game, channel);
             return interaction.followUp('Game launched!');
-        }, 10 * 1000);
+        }, 1 * 1000);
     }
 }

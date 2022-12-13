@@ -1,12 +1,14 @@
 const { EmbedBuilder } = require('@discordjs/builders');
-const { Colors } = require('discord.js');
+const { Colors, Embed } = require('discord.js');
 const sample = require('lodash/sample');
 const { getMember } = require('../database/schemas/Member');
 const { Settings } = require('../database/schemas/Settings');
+const { getRandomInt } = require('../helpers/Utils');
 
 const games = [
     'first-win',
-    'guess'
+    'guess-emoji',
+    'guess-number'
 ];
 
 /**
@@ -14,7 +16,7 @@ const games = [
  * @param {import('discord.js').Channel} channel 
  */
 const firstWin = async (channel) => {
-    const timer = 5 * 60 * 1000;
+    const timer = 20 * 60 * 1000;
     /**
      * @type {import('discord.js').Message}
      */
@@ -24,7 +26,7 @@ const firstWin = async (channel) => {
                 .setTitle('Who is the fastest?')
                 .setColor(Colors.DarkAqua)
                 .setDescription(`Gotta be fast Aphelian! The first user who react with 🏁 to this message will earn **1 Game Point**!
-                You have **${timer / 60 / 1000} minutes**`)
+You have **${timer / 60 / 1000} minutes**`)
                 .setTimestamp()
                 .setFooter({
                     text: `You have ${timer / 60 / 1000} minutes`
@@ -72,7 +74,7 @@ const firstWin = async (channel) => {
  * @param {import('discord.js').Channel} channel 
  */
 const guess = async (channel) => {
-    const timer = 5 * 60 * 1000;
+    const timer = 20 * 60 * 1000;
 
     /**
      * @type {import('discord.js').Message}
@@ -83,7 +85,7 @@ const guess = async (channel) => {
                 .setTitle('Guess the emoji!')
                 .setColor(Colors.DarkGold)
                 .setDescription(`Gotta be fast Aphelian! The first user who react with the right emoji to this message will earn **1 Game Point**!
-                You have **${timer / 60 / 1000} minutes**`)
+You have **${timer / 60 / 1000} minutes**`)
                 .setTimestamp()
         ]
     });
@@ -129,6 +131,79 @@ const guess = async (channel) => {
 }
 
 /**
+ * @param {import('discord.js').GuildBasedChannel)} channel
+ */
+const guessNumber = async (channel) => {
+    const timer = 5 * 60 * 1000;
+    const number = getRandomInt(0, 100);
+
+    /**
+     * @type {import('discord.js').Message}
+     */
+    const message = await channel.send({
+        embeds: [
+            new EmbedBuilder()
+                .setTitle('Guess the emoji!')
+                .setColor(Colors.Blurple)
+                .setDescription(`Gotta be fast Aphelian! The first user who guess the number between 0 and 100 will earn **1 Game Point**!
+You have **${timer / 60 / 1000} minutes**`)
+                .setTimestamp()
+        ]
+    });
+
+    channel.setRateLimitPerUser(5, 'minigame');
+
+    const collector = channel.createMessageCollector({
+        filter: m => /^\d+$/.test(m.content.trim()),
+        time: timer,
+    });
+
+    collector.on('collect', async m => {
+        if (parseInt(m.content) === number) {
+            channel.send({ embeds: [
+                new EmbedBuilder()
+                    .setTitle('Congratulations!')
+                    .setColor(Colors.Green)
+                    .setDescription(`Congratulations <@${m.author.id}> you're the fastest ever! 1 GP for you`)
+                    .setTimestamp(),
+            ]});
+            collector.stop('winner');
+            const member = await getMember(m.author.id);
+            member.game_points++;
+            member.save();
+        }
+        else if (parseInt(m.content) > number) {
+            channel.send({ embeds: [
+                new EmbedBuilder()
+                    .setDescription('Too high!')
+                    .setColor(Colors.Red)
+            ]});
+        }
+        else if (parseInt(m.content) < number) {
+            channel.send({ embeds: [
+                new EmbedBuilder()
+                    .setDescription('Too low!')
+                    .setColor(Colors.Red)
+            ]});
+        }
+    });
+
+    collector.on('end', (collected, reason) => {
+        channel.setRateLimitPerUser(0);
+        if (reason === 'time') {
+            message.reply({
+                embeds: [
+                    new EmbedBuilder()
+                        .setDescription('Nobody wants to play with me :(')
+                        .setColor(Colors.Red)
+                ]
+            });
+        }
+    })
+
+}
+
+/**
  * 
  * @param {string} game 
  * @param {import('discord.js').GuildBasedChannel)} channel
@@ -138,8 +213,11 @@ const launch = async (game, channel) => {
         case 'first-win':
             await firstWin(channel);
             break;
-        case 'guess':
+        case 'guess-emoji':
             await guess(channel);
+            break;
+        case 'guess-number':
+            await guessNumber(channel);
             break;
     }
 };
@@ -165,4 +243,5 @@ module.exports = {
         }
     },
     launch,
+    games,
 }
