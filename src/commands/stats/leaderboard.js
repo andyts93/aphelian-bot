@@ -75,11 +75,6 @@ const leaderboard = async (trigger, type) => {
 
     const members = await Member.find({}).sort({ [schemaField]: -1 });
 
-    const rows = [];
-    for (let i = 0; i < 20; i++) {
-        rows.push(members[0]);
-    }
-
     const embed = new EmbedBuilder()
         .setTitle(`**${embedTitle} leaderboard**`)
         .setColor(Colors.Grey);
@@ -89,7 +84,7 @@ const leaderboard = async (trigger, type) => {
         trigger,
         trigger.member,
         embed,
-        rows.map((row, index) => {
+        members.map((row, index) => {
             let position;
             switch (index) {
                 case 0:
