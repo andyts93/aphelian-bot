@@ -41,6 +41,6 @@ module.exports = class Utils {
    * @param {*} member_id 
    */
   static async retrieveMember(guild, member_id) {
-    const member = guild.members.cache.get(member_id) || await guild.members.fetch(member_id);
+    return guild.members.cache.get(member_id) || await guild.members.fetch(member_id);
   }
 }

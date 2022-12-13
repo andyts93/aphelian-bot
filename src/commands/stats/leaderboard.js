@@ -80,12 +80,8 @@ const leaderboard = async (trigger, type) => {
         .setTitle(`**${embedTitle} leaderboard**`)
         .setColor(Colors.Grey);
 
-    return new ReactionMenu(
-        trigger.client,
-        trigger,
-        trigger.member,
-        embed,
-        members.map((row, index) => {
+    const rows = await Promise.all(
+        members.map(async (row, index) => {
             let position;
             switch (index) {
                 case 0:
@@ -101,10 +97,18 @@ const leaderboard = async (trigger, type) => {
                     position = `\`${index + 1}.  \``;
                     break;
             }
-            return retrieveMember(row.member_id).then(() => {
-                return `${position} <@${row.member_id}>・**${row[schemaField]}** ${um}`; 
-            });
-        }),
+            await retrieveMember(trigger.guild, row.member_id);
+            return `${position} <@${row.member_id}>・**${row[schemaField]}** ${um}`;
+        })
+    );
+    console.log(rows);
+
+    return new ReactionMenu(
+        trigger.client,
+        trigger,
+        trigger.member,
+        embed,
+        rows,
         10,
         15 * 60 * 1000
     );
