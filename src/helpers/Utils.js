@@ -41,6 +41,14 @@ module.exports = class Utils {
    * @param {*} member_id 
    */
   static async retrieveMember(guild, member_id) {
-    return guild.members.cache.get(member_id) || await guild.members.fetch(member_id);
+    let member = guild.members.cache.get(member_id);
+    if (!member) {
+      try {
+        member = await guild.members.fetch(member_id);
+      } catch (err) {
+        return null;
+      }
+    }
+    return member;
   }
 }
