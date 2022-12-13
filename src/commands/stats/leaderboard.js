@@ -85,7 +85,7 @@ const leaderboard = async (trigger, type) => {
         trigger,
         trigger.member,
         embed,
-        members.map((row, index) => {
+        members.map(async (row, index) => {
             let position;
             switch (index) {
                 case 0:
