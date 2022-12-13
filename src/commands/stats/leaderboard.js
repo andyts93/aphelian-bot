@@ -80,28 +80,24 @@ const leaderboard = async (trigger, type) => {
         .setTitle(`**${embedTitle} leaderboard**`)
         .setColor(Colors.Grey);
 
-    const rows = await Promise.all(
-        members.map(async (row, index) => {
-            let position;
-            switch (index) {
-                case 0:
-                    position = ':first_place:  ';
-                    break;
-                case 1:
-                    position = ':second_place:  ';
-                    break;
-                case 2:
-                    position = ':third_place:  ';
-                    break;
-                default:
-                    position = `\`${index + 1}.  \``;
-                    break;
-            }
-            await retrieveMember(trigger.guild, row.member_id);
-            return `${position} <@${row.member_id}>・**${row[schemaField]}** ${um}`;
-        })
-    );
-    console.log(rows);
+    const rows = members.map(async (row, index) => {
+        let position;
+        switch (index) {
+            case 0:
+                position = ':first_place:  ';
+                break;
+            case 1:
+                position = ':second_place:  ';
+                break;
+            case 2:
+                position = ':third_place:  ';
+                break;
+            default:
+                position = `\`${index + 1}.  \``;
+                break;
+        }
+        return `${position} <@${row.member_id}>・**${row[schemaField]}** ${um}`;
+    });
 
     return new ReactionMenu(
         trigger.client,

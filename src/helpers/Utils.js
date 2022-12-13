@@ -34,21 +34,4 @@ module.exports = class Utils {
     max = Math.floor(max);
     return Math.floor(Math.random() * (max - min + 1)) + min;
   }
-
-  /**
-   * 
-   * @param {import('discord.js').Guild} guild
-   * @param {*} member_id 
-   */
-  static async retrieveMember(guild, member_id) {
-    let member = guild.members.cache.get(member_id);
-    if (!member) {
-      try {
-        member = await guild.members.fetch(member_id);
-      } catch (err) {
-        return null;
-      }
-    }
-    return member;
-  }
 }
