@@ -5,6 +5,7 @@
 const { ApplicationCommandOptionType, EmbedBuilder, Colors } = require('discord.js');
 const { Member } = require('../../database/schemas/Member');
 const ReactionMenu = require('../../helpers/ReactionMenu');
+const { retrieveMember } = require('../../helpers/Utils');
 
 /**
  * @type {LeaderBoardType}
@@ -100,6 +101,7 @@ const leaderboard = async (trigger, type) => {
                     position = `\`${index + 1}.  \``;
                     break;
             }
+            await retrieveMember(row.member_id);
             return `${position} <@${row.member_id}>・**${row[schemaField]}** ${um}`; 
         }),
         10,
