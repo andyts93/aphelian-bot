@@ -85,7 +85,7 @@ const leaderboard = async (trigger, type) => {
         trigger,
         trigger.member,
         embed,
-        await members.map(async (row, index) => {
+        members.map((row, index) => {
             let position;
             switch (index) {
                 case 0:
@@ -101,8 +101,9 @@ const leaderboard = async (trigger, type) => {
                     position = `\`${index + 1}.  \``;
                     break;
             }
-            await retrieveMember(row.member_id);
-            return `${position} <@${row.member_id}>・**${row[schemaField]}** ${um}`; 
+            return retrieveMember(row.member_id).then(() => {
+                return `${position} <@${row.member_id}>・**${row[schemaField]}** ${um}`; 
+            });
         }),
         10,
         15 * 60 * 1000
