@@ -143,7 +143,7 @@ const guessNumber = async (channel) => {
     const message = await channel.send({
         embeds: [
             new EmbedBuilder()
-                .setTitle('Guess the emoji!')
+                .setTitle('Guess the number!')
                 .setColor(Colors.Blurple)
                 .setDescription(`Gotta be fast Aphelian! The first user who guess the number between 0 and 100 will earn **1 Game Point**!
 You have **${timer / 60 / 1000} minutes**`)
@@ -160,7 +160,7 @@ You have **${timer / 60 / 1000} minutes**`)
 
     collector.on('collect', async m => {
         if (parseInt(m.content) === number) {
-            channel.send({ embeds: [
+            m.reply({ embeds: [
                 new EmbedBuilder()
                     .setTitle('Congratulations!')
                     .setColor(Colors.Green)
@@ -173,14 +173,14 @@ You have **${timer / 60 / 1000} minutes**`)
             member.save();
         }
         else if (parseInt(m.content) > number) {
-            channel.send({ embeds: [
+            m.reply({ embeds: [
                 new EmbedBuilder()
                     .setDescription('Too high!')
                     .setColor(Colors.Red)
             ]});
         }
         else if (parseInt(m.content) < number) {
-            channel.send({ embeds: [
+            m.reply({ embeds: [
                 new EmbedBuilder()
                     .setDescription('Too low!')
                     .setColor(Colors.Red)
