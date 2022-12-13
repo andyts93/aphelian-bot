@@ -80,7 +80,7 @@ const leaderboard = async (trigger, type) => {
         .setTitle(`**${embedTitle} leaderboard**`)
         .setColor(Colors.Grey);
 
-    const rows = members.map(async (row, index) => {
+    const rows = members.map((row, index) => {
         let position;
         switch (index) {
             case 0:
