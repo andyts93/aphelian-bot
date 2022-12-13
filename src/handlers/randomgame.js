@@ -222,6 +222,16 @@ const launch = async (game, channel) => {
     }
 };
 
+const handle = async (client, settings) => {
+    const random = Math.random();
+    if (random >= settings.randomGames.probability) {
+        const game = sample(games);
+        const channel = await client.guilds.cache.get(process.env.GUILD_ID).channels.fetch(process.env.GAME_CHANNEL);
+        
+        await launch(game, channel);
+    }
+}
+
 module.exports = {
     /**
      * 
@@ -231,14 +241,9 @@ module.exports = {
         const settings = await Settings.findOne();
 
         if (settings.randomGames.enabled) {
+            await handle(client, settings);
             client.randomGameInterval = setInterval(async () => {
-                const random = Math.random();
-                if (random >= settings.randomGames.probability) {
-                    const game = sample(games);
-                    const channel = await client.guilds.cache.get(process.env.GUILD_ID).channels.fetch(process.env.GAME_CHANNEL);
-                    
-                    await launch(game, channel);
-                }
+                await handle(client, settings);
             }, 10 * 60 * 1000);
         }
     },

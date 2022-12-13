@@ -8,7 +8,6 @@ module.exports = {
     name: 'startrandomgame',
     description: 'Start a random game in the specified channel right now',
     category: 'ADMIN',
-    userPermissions: ['ManageGuild'],
     command: {
         enabled: false
     },
