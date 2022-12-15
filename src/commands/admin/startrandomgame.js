@@ -33,6 +33,18 @@ module.exports = {
                 required: false,
                 description: 'The channel where launch the game',
                 type: ApplicationCommandOptionType.Channel,
+            },
+            {
+                name: 'points',
+                required: false,
+                description: 'Amount of points to reward',
+                type: ApplicationCommandOptionType.Integer
+            },
+            {
+                name: 'max',
+                required: false,
+                description: 'Max number in "guess the number"',
+                type: ApplicationCommandOptionType.Integer
             }
         ]
     },
@@ -40,6 +52,8 @@ module.exports = {
     async interactionRun(interaction) {
         const game = interaction.options.getString('game')
         let channel = interaction.options.getChannel('channel');
+        const points = interaction.options.getInteger('points');
+        const max = interaction.options.getInteger('max');
 
         if (!channel) {
             channel = await interaction.client.guilds.cache.get(process.env.GUILD_ID).channels.fetch(process.env.GAME_CHANNEL);
@@ -54,7 +68,7 @@ module.exports = {
         ] })
 
         setTimeout(() => {
-            launch(game, channel);
+            launch(game, channel, {max, points});
             return interaction.followUp('Game launched!');
         }, 1 * 1000);
     }

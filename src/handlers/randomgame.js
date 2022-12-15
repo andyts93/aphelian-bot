@@ -132,10 +132,17 @@ You have **${timer / 60 / 1000} minutes**`)
 
 /**
  * @param {import('discord.js').GuildBasedChannel)} channel
+ * @param {integer} max
+ * @param {integer} points
  */
-const guessNumber = async (channel) => {
+const guessNumber = async (channel, max, points) => {
+    if (!max) max = 100;
+    if (!points) points = 1;
+
     const timer = 5 * 60 * 1000;
-    const number = getRandomInt(0, 100);
+    const number = getRandomInt(0, max);
+
+    console.log(number);
 
     /**
      * @type {import('discord.js').Message}
@@ -145,7 +152,7 @@ const guessNumber = async (channel) => {
             new EmbedBuilder()
                 .setTitle('Guess the number!')
                 .setColor(Colors.Blurple)
-                .setDescription(`Gotta be fast Aphelian! The first user who guess the number between 0 and 100 will earn **1 Game Point**!
+                .setDescription(`Gotta be fast Aphelian! The first user who guess the number between 0 and ${max} will earn **${points} Game Point**!
 You have **${timer / 60 / 1000} minutes**`)
                 .setTimestamp()
         ]
@@ -164,12 +171,12 @@ You have **${timer / 60 / 1000} minutes**`)
                 new EmbedBuilder()
                     .setTitle('Congratulations!')
                     .setColor(Colors.Green)
-                    .setDescription(`Congratulations <@${m.author.id}> you're the fastest ever! 1 GP for you`)
+                    .setDescription(`Congratulations <@${m.author.id}> you're the fastest ever! ${points} GP for you`)
                     .setTimestamp(),
             ]});
             collector.stop('winner');
             const member = await getMember(m.author.id);
-            member.game_points++;
+            member.game_points += points;
             member.save();
         }
         else if (parseInt(m.content) > number) {
@@ -207,8 +214,9 @@ You have **${timer / 60 / 1000} minutes**`)
  * 
  * @param {string} game 
  * @param {import('discord.js').GuildBasedChannel)} channel
+ * @param {object} options
  */
-const launch = async (game, channel) => {
+const launch = async (game, channel, options) => {
     switch (game) {
         case 'first-win':
             await firstWin(channel);
@@ -217,7 +225,7 @@ const launch = async (game, channel) => {
             await guess(channel);
             break;
         case 'guess-number':
-            await guessNumber(channel);
+            await guessNumber(channel, options?.max, options?.points);
             break;
     }
 };
