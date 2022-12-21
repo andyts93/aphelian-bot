@@ -222,7 +222,7 @@ const guessWord = async (channel, word, points) => {
     };
 
     const timer = 10 * 60 * 1000;
-    if (!points) points = 1
+    if (!points) points = 2;
 
     if (!word) {
         const words = readFileSync(__dirname + '/../assets/words.txt', 'utf8').toString().split('\n');
