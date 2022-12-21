@@ -45,6 +45,12 @@ module.exports = {
                 required: false,
                 description: 'Max number in "guess the number"',
                 type: ApplicationCommandOptionType.Integer
+            },
+            {
+                name: 'word',
+                required: false,
+                description: 'The word to guess',
+                type: ApplicationCommandOptionType.String,
             }
         ]
     },
@@ -54,6 +60,7 @@ module.exports = {
         let channel = interaction.options.getChannel('channel');
         const points = interaction.options.getInteger('points');
         const max = interaction.options.getInteger('max');
+        const word = interaction.options.getString('word');
 
         if (!channel) {
             channel = await interaction.client.guilds.cache.get(process.env.GUILD_ID).channels.fetch(process.env.GAME_CHANNEL);
@@ -68,7 +75,7 @@ module.exports = {
         ] })
 
         setTimeout(() => {
-            launch(game, channel, {max, points});
+            launch(game, channel, {max, points, word});
             return interaction.followUp('Game launched!');
         }, 1 * 1000);
     }
