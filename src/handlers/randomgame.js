@@ -243,6 +243,10 @@ const guessWord = async (channel, word, points) => {
                 .setTitle('Guess the word!')
                 .setColor(Colors.Blurple)
                 .setDescription(`Gotta be fast Aphelian! The first user who guess the word will earn **${points} Game Point**!
+
+**RULES**
+*You can type a letter to find out if it's in the word, or the full word if you think you guessed it.*
+
 You have **${timer / 60 / 1000} minutes**`)
                 .setTimestamp()
         ]
@@ -311,7 +315,7 @@ ${said.map(el => el.toUpperCase()).join(', ')}
             if (positions.length > 0) {
 
                 positions.forEach(p => {
-                    guess = guess.replaceAt(p, m.content);
+                    guess = guess.replaceAt(p, m.content.toUpperCase());
                 });
 
                 if (guess.toLowerCase() === word.toLowerCase()) {
