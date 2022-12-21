@@ -4,6 +4,7 @@ const sample = require('lodash/sample');
 const { getMember } = require('../database/schemas/Member');
 const { Settings } = require('../database/schemas/Settings');
 const { getRandomInt } = require('../helpers/Utils');
+const { readFileSync } = require('fs');
 
 const games = [
     'first-win',
@@ -224,14 +225,16 @@ const guessWord = async (channel, word, points) => {
     if (!points) points = 1
 
     if (!word) {
-        const axios = require('axios').default;
-        try {
-            const response = await axios.get('https://random-word-api.herokuapp.com/word?lang=en');
-            word = response?.data[0];
-        }
-        catch (err) {
-            channel.client.logger.error('Unable to get random word', err);
-        }
+        const words = readFileSync(__dirname + '/../assets/words.txt', 'utf8').toString().split('\n');
+        word = sample(words);
+        // const axios = require('axios').default;
+        // try {
+        //     const response = await axios.get('https://random-word-api.herokuapp.com/word?lang=en');
+        //     word = response?.data[0];
+        // }
+        // catch (err) {
+        //     channel.client.logger.error('Unable to get random word', err);
+        // }
     }
 
     /**
