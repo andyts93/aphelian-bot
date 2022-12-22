@@ -227,14 +227,6 @@ const guessWord = async (channel, word, points) => {
     if (!word) {
         const words = readFileSync(__dirname + '/../assets/words.txt', 'utf8').toString().split('\n');
         word = sample(words);
-        // const axios = require('axios').default;
-        // try {
-        //     const response = await axios.get('https://random-word-api.herokuapp.com/word?lang=en');
-        //     word = response?.data[0];
-        // }
-        // catch (err) {
-        //     channel.client.logger.error('Unable to get random word', err);
-        // }
     }
 
     /**

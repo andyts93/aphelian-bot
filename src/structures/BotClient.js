@@ -43,6 +43,11 @@ module.exports = class BotClient extends Client {
          * @type {Collection<string, import('./structures/Command')>}}
          */
         this.slashCommands = new Collection();
+
+        /**
+         * @type {boolean}
+         */
+        this.minigameRunning = false;
     }
 
     loadEvents(directory) {
